@@ -76,7 +76,7 @@ class Engine(object):
 				for i in self.rules['repos']['features']:
 					if i in self.code and self.full_name not in repos:
 						repos.append(self.full_name)
-						print('Find repos https://github.com/' + self.full_name + ', the next one!')
+						print('Find repos https://github.com/' + self.full_name)
 						break;
 		
 		return True
@@ -140,7 +140,7 @@ class Engine(object):
 				return False
 
 			self.process_pages(pages_content, page, total)
-			self.save_result(self.rules['corp']['proname'])
+			self.save_result()
 		return True
 
 
@@ -161,7 +161,7 @@ class Engine(object):
 		return match_codes
 
 
-	def save_result(self, name):
+	def save_result(self):
 		if self.rules['mode'] == '0':
 			if len(self.result) == 0:
 				print('none content for save.')
@@ -179,7 +179,7 @@ class Engine(object):
 					html += '<code>{code}</code><hr>'.format(code=code)
 			html += '</table></body>'
 		
-			f = open('report/' + name + '.html', 'a')
+			f = open('report/report.html', 'a')
 			f.write(html)
 			f.close()
 		elif self.rules['mode'] == '1':
@@ -191,7 +191,7 @@ class Engine(object):
 
 			for i in repos:
 				repos_count += 1
-				f.write(str(repos_count) + ':<a href=https://github.com/' + i + '>' + i + '</a>&emsp;&emsp;&emsp;&emsp;author:' + i.split('/')[0] + '<br>')
+				f.write(str(repos_count) + ':<a href=https://github.com/' + i + '>' + i + '</a><br>')
 			f.close()
 
 def get_repos():

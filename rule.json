@@ -1,6 +1,5 @@
 {
 	"corp":{
-		"proname":"example",
 		"keywords":"example password|example username",
 		"ext": "php,java,py"
 	},
