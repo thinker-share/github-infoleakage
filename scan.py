@@ -45,6 +45,7 @@ def init_opt():
 
 	rules['mode'] = options.mode
 
+	os.system('mkdir -p report')
 	os.system("rm -f report/*")
 	return rules
 
