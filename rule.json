@@ -10,7 +10,6 @@
 		"ext":"php,java,py"
 	},
 	"keys":{
-		"author":"author",
 		"link":"://",
 		"username":"(username|user)\\s*(:|=)",
 		"password":"(password|passwd|userpwd)\\s*(:|=)",

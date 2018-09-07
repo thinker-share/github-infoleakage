@@ -20,14 +20,21 @@ def search_pages(rules):
 	if rules['mode'] == '0':
 		print('start search code.')
 		for i in rules['corp']['keywords'].split('|'):
-			engine.Engine(token=rules['token']).search(i, rules)
+			engine.Engine(token=rules['token']).search(keywords=i, rules=rules)
 			time.sleep(10)
 
 	elif rules['mode'] == '1':
 		print('start search repos.')
 		for i in rules['repos']['keywords'].split('|'):
-			engine.Engine(token=rules['token']).search(i, rules)
+			engine.Engine(token=rules['token']).search(keywords=i, rules=rules)
 			time.sleep(10)
+
+		# search leakage from repos.
+		repos = engine.get_repos()
+		for i in repos:
+			for k in ['user','pass']:
+				engine.Engine(token=rules['token']).search(keywords=k, rules=rules, repos=i)
+				time.sleep(10)
 	
 
 def init_opt():

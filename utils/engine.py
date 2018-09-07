@@ -8,6 +8,7 @@ from jinja2 import utils
 # https://developer.github.com/v3/#pagination
 # max 5000 requests/H
 per_page = 50
+urls = []
 repos = []
 repos_count = 0
 
@@ -25,6 +26,7 @@ class Engine(object):
 		self.keywords = None
 
 	def process_pages(self, pages_content, page, total):
+		global urls
 		if self.rules['mode'] == '0':
 			for index, content in enumerate(pages_content):
 				#time.sleep(0.5)
@@ -51,8 +53,10 @@ class Engine(object):
 					'repository': self.full_name,
 					'path': self.path,
 				}
-				self.result[current_i] = result
-				print('{b} Find keywords lines, the next one!'.format(b=base_info))
+				if self.url not in urls:
+					self.result[current_i] = result
+					urls.append(self.url)
+					print('{b} Find keywords lines, the next one!'.format(b=base_info))
 
 		elif self.rules['mode'] == '1':
 			global repos
@@ -78,7 +82,10 @@ class Engine(object):
 		return True
 
 
-	def search(self, keywords, rules):
+	def search(self, keywords, rules, repos=None):
+		if repos != None:
+			rules['mode'] = '0'
+
 		if rules['mode'] == '0':
 			self.ext = rules['corp']['ext']
 		elif rules['mode'] == '1':
@@ -95,6 +102,8 @@ class Engine(object):
 				for ext in self.ext.split(','):
 					ext_query += ' extension:' + str(ext)
 			keyword = self.keywords + ext_query
+			if repos != None:
+				keyword += ' repo:' + repos
 			print("search for " + keyword)
 			resource = self.g.search_code(keyword, sort="indexed", order="desc")
 		except GithubException as e:
@@ -142,9 +151,11 @@ class Engine(object):
         
 		for line in lines:
 			for key,value in self.rules['keys'].items():
-				if key not in match_codes:
-					match_codes[key] = ''
 				if re.findall(value, line.lower()):
+					if key == 'link' and re.findall('(\\.org|\\.net|\\.edu|\\.com)', line.lower()):
+						continue
+					if key not in match_codes:
+						match_codes[key] = ''
 					match_codes[key] += line + '|'
 
 		return match_codes
@@ -182,3 +193,7 @@ class Engine(object):
 				repos_count += 1
 				f.write(str(repos_count) + ':<a href=https://github.com/' + i + '>' + i + '</a>&emsp;&emsp;&emsp;&emsp;author:' + i.split('/')[0] + '<br>')
 			f.close()
+
+def get_repos():
+	global repos
+	return repos
