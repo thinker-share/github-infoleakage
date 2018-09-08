@@ -73,7 +73,7 @@ class Engine(object):
 				except Exception as e:
 					print('Get Content Exception: {e} retrying...'.format(e=e))
 					continue
-				for i in self.rules['repos']['features']:
+				for i in self.rules['repos']['features'].split('|'):
 					if i in self.code and self.full_name not in repos:
 						repos.append(self.full_name)
 						print('Find repos https://github.com/' + self.full_name)
